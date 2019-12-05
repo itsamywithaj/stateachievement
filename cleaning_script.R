@@ -293,7 +293,7 @@ View(california)
 names(california) <- tolower(names(california))
 names(california)
 california <- california %>% 
-  select(school, county, district, ethnic, enr_total)
+  select(school, county, district, gender, ethnic, enr_total)
 View(california)
 str(california)
 names(california)
@@ -302,11 +302,19 @@ levels(california$ethnic) <- c("unreported","amind","asian","hawpi","filipino","
 head(california)
 levels(california$ethnic)[5] <- "asian"
 california <- california %>% 
-  distinct(school, district, ethnic, .keep_all = TRUE) %>% 
+  distinct(school, district, gender, ethnic, .keep_all = TRUE) %>% 
   spread(key = ethnic,
          value = enr_total,
          fill = 0) %>% 
   mutate(total = unreported + amind + asian + hawpi + hispanic + black + white + multiple)
+levels(california$gender) <- c("F","F") # combine genders to sum it up
+california <- california %>% 
+  select(school, district, unreported, amind, asian, hawpi, hispanic, black, white, multiple, total)
+install.packages("data.table")
+library(data.table)
+DT <- data.table(california)
+california <- DT[, lapply(.SD, sum), by=list(school, district)]
+
 View(california)
 california <- california %>% 
   mutate(perc_white = white / total,
@@ -342,6 +350,7 @@ y <- california %>%
 View(y)
 california_members <- california[c(1666:1668,1683,3922:3937,9345,9695,9697),]
 names(california_members)
+View(california_members)
 california_members <- california_members %>% 
   arrange(district, school)
 y <- y %>% 
