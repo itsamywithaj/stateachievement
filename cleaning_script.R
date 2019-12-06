@@ -287,7 +287,7 @@ str(y)
 y[,3:32] <- sapply(y[,3:32],as.numeric)
 write.csv(y, file = file.path('standardized_LA_mem.csv'), row.names = FALSE)
 # ------------------------------------------------------------------------------------------------------------------------
-# CALIFORNIA
+# CALIFORNIA Enrollment by Race
 california <- read.csv("CA_enrl_2019-03-28.csv")
 View(california)
 names(california) <- tolower(names(california))
@@ -348,7 +348,7 @@ y <- california %>%
             n = n()) %>% 
   distinct(district, .keep_all = TRUE)
 View(y)
-california_members <- california[c(1666:1668,1683,3922:3937,9345,9695,9697),]
+california_members <- california[c(1666:1668,1683,3922:3937,9342,9692,9694),]
 names(california_members)
 View(california_members)
 california_members <- california_members %>% 
@@ -568,7 +568,8 @@ california_members$sys_multiple <- c(y_mem[1, 16], # 9 members in LA Unified
 
 names(y_mem)
 View(california_members)
-california_members[,4:37] <- sapply(california_members[,4:37],as.numeric)
+california_members <- data.frame(california_members)
+california_members[,3:28] <- sapply(california_members[,3:28],as.numeric)
 california_members <- california_members %>% 
   mutate(diff_total = total - sys_avgenrolled,
          diff_amind = perc_amind - sys_amind,
@@ -581,29 +582,29 @@ california_members <- california_members %>%
          diff_unreported = perc_unreported - sys_unreported)
 View(california_members)
 names(california_members) # diff total / standard deviation
-california_members$std_total = c(california_members[1,38] / y_mem[1, 3], # LA Unified Schools:
-                                california_members[2,38] / y_mem[1, 3], # COTW Hollywood, Mar Vista
-                                california_members[3,38] / y_mem[1, 3], # Silver Lake
-                                california_members[4,38] / y_mem[1, 3], # CLIC
-                                california_members[5,38] / y_mem[1, 3], # HTH LA
-                                california_members[6,38] / y_mem[1, 3], # HTH LA Middle
-                                california_members[7,38] / y_mem[1, 3], # The City
-                                california_members[8,38] / y_mem[1, 3], # Valley ES
-                                california_members[9,38] / y_mem[1, 3], # Valley MS
-                                california_members[10,38] / y_mem[2, 3], # San Diego Schools: HTH Elem
-                                california_members[11,38] / y_mem[2, 3], # HTH Elem Explorer
-                                california_members[12,38] / y_mem[2, 3], # HTH
-                                california_members[13,38] / y_mem[2, 3], # HTH International
-                                california_members[14,38] / y_mem[2, 3], # HTH Media Arts
-                                california_members[15,38] / y_mem[2, 3], # HT Middle
-                                california_members[16,38] / y_mem[2, 3], # HT Middle Media Arts
-                                california_members[17,38] / y_mem[2, 3], # HT Elem Chula Vista
-                                california_members[18,38] / y_mem[2, 3], # HT Elem North County
-                                california_members[19,38] / y_mem[2, 3], # HTH Chula Vista 
-                                california_members[20,38] / y_mem[2, 3], # HTH Mesa
-                                california_members[21,38] / y_mem[2, 3], # HTH North County
-                                california_members[22,38] / y_mem[2, 3], # HT Middle Chula Vista
-                                california_members[23,38] / y_mem[2, 3]) # HT Middle North County
+california_members$std_total = c(california_members[1,29] / y_mem[1, 3], # LA Unified Schools:
+                                california_members[2,29] / y_mem[1, 3], # COTW Hollywood, Mar Vista
+                                california_members[3,29] / y_mem[1, 3], # Silver Lake
+                                california_members[4,29] / y_mem[1, 3], # CLIC
+                                california_members[5,29] / y_mem[1, 3], # HTH LA
+                                california_members[6,29] / y_mem[1, 3], # HTH LA Middle
+                                california_members[7,29] / y_mem[1, 3], # The City
+                                california_members[8,29] / y_mem[1, 3], # Valley ES
+                                california_members[9,29] / y_mem[1, 3], # Valley MS
+                                california_members[10,29] / y_mem[2, 3], # San Diego Schools: HTH Elem
+                                california_members[11,29] / y_mem[2, 3], # HTH Elem Explorer
+                                california_members[12,29] / y_mem[2, 3], # HTH
+                                california_members[13,29] / y_mem[2, 3], # HTH International
+                                california_members[14,29] / y_mem[2, 3], # HTH Media Arts
+                                california_members[15,29] / y_mem[2, 3], # HT Middle
+                                california_members[16,29] / y_mem[2, 3], # HT Middle Media Arts
+                                california_members[17,29] / y_mem[2, 3], # HT Elem Chula Vista
+                                california_members[18,29] / y_mem[2, 3], # HT Elem North County
+                                california_members[19,29] / y_mem[2, 3], # HTH Chula Vista 
+                                california_members[20,29] / y_mem[2, 3], # HTH Mesa
+                                california_members[21,29] / y_mem[2, 3], # HTH North County
+                                california_members[22,29] / y_mem[2, 3], # HT Middle Chula Vista
+                                california_members[23,29] / y_mem[2, 3]) # HT Middle North County
 california_members$std_amind = c(california_members[1,30] / y_mem[1, 5], # LA Unified Schools:
                                  california_members[2,30] / y_mem[1, 5], # COTW Hollywood, Mar Vista
                                  california_members[3,30] / y_mem[1, 5], # Silver Lake
@@ -806,3 +807,92 @@ View(z)
 str(z)
 z[,3:29] <- sapply(z[,3:29],as.numeric)
 write.csv(z, file = file.path('standardized_CA_mem.csv'), row.names = FALSE)
+
+# ------------------------------------------------------------------------------------------------------------------------
+# California FRPM
+library(readxl)
+cali_frpm <- read_excel("CA_ frpm1819.xlsx", sheet = "FRPM School-Level Data ") # Read FRPM data
+colnames(cali_frpm) <- cali_frpm[1,]
+cali_frpm <- cali_frpm[-1,]
+names(cali_frpm) <- tolower(names(cali_frpm))
+names(cali_frpm)[7] <- "school_name"
+names(cali_frpm)[22] <- "perc_elig"
+names(cali_frpm)[6] <- "district"
+cali_frpm <- cali_frpm %>% 
+  select(school_name, district, perc_elig) %>% 
+  arrange(district, school_name)
+View(cali_frpm)
+str(cali_frpm)
+cali_frpm$perc_elig <- as.numeric(cali_frpm$perc_elig)
+cali_frpm$district <- as.factor(cali_frpm$district)
+a <- cali_frpm %>% 
+  group_by(district) %>% 
+  summarize(mean_dist = mean(perc_elig),
+          sd_dist = sd(perc_elig))
+rownames(a) <- a$district
+cali_frpm_mem_dist <- a[c("Los Angeles Unified",
+                          "San Diego Unified"),]
+View(cali_frpm_mem_dist)
+cali_frpm_members <- cali_frpm[c(4413:4416, 4623:4624, 5082, 5114,5115,8078:8084,9016:9022),]
+cali_frpm_members$sys_frpm <- as.numeric(c(cali_frpm_mem_dist[1,2],cali_frpm_mem_dist[1,2],cali_frpm_mem_dist[1,2],
+                                cali_frpm_mem_dist[1,2],cali_frpm_mem_dist[1,2],cali_frpm_mem_dist[1,2],
+                                cali_frpm_mem_dist[1,2],cali_frpm_mem_dist[1,2],cali_frpm_mem_dist[1,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2],
+                                cali_frpm_mem_dist[2,2],cali_frpm_mem_dist[2,2]))
+
+cali_frpm_members <- cali_frpm_members %>% 
+  mutate(diff = perc_elig - sys_frpm)
+View(cali_frpm_members)
+names(cali_frpm_members)
+cali_frpm_members[1:9,6] <- cali_frpm_members[1:9,5] / as.numeric(c(cali_frpm_mem_dist[1,3],cali_frpm_mem_dist[1,3],
+                                                                   cali_frpm_mem_dist[1,3],cali_frpm_mem_dist[1,3],
+                                                                   cali_frpm_mem_dist[1,3],cali_frpm_mem_dist[1,3],
+                                                                   cali_frpm_mem_dist[1,3],cali_frpm_mem_dist[1,3],
+                                                                   cali_frpm_mem_dist[1,3]))
+cali_frpm_members[10:23,6] <- cali_frpm_members[10:23,5] / as.numeric(c(cali_frpm_mem_dist[2,3],cali_frpm_mem_dist[2,3],
+                                                                    cali_frpm_mem_dist[2,3],cali_frpm_mem_dist[2,3],
+                                                                    cali_frpm_mem_dist[2,3],cali_frpm_mem_dist[2,3],
+                                                                    cali_frpm_mem_dist[2,3],cali_frpm_mem_dist[2,3],
+                                                                    cali_frpm_mem_dist[2,3]))
+
+# ------------------------------------------------------------------------------------------------------------------------
+# California LEP
+cali_lep <- read.csv('CA_lep1819.csv') # Read the English learner data
+cali_frpm <- read.csv('CA_enrl_2019-03-28.csv')
+View(cali_lep)
+names(cali_lep) <- tolower(names(cali_lep))
+names(cali_lep)
+levels(cali_lep$language)[1:67] <- "a" # code languages as repeats to sum it up
+cali_lep <- cali_lep %>% 
+  select(district, school, total_el) %>% 
+  arrange(district, school)
+str(cali_lep)
+cali_lep$total_el <- as.numeric(cali_lep$total_el)
+install.packages("data.table")
+library(data.table)
+DT <- data.table(cali_lep)
+DT$total_el <- as.numeric(DT$total_el)
+cali_lep <- DT[, lapply(.SD, sum), by=list(district, school)]
+cali_lep <- cali_lep %>% 
+  arrange(district, school)
+View(cali_lep)
+View(a)
+a <- cali_lep %>% 
+  group_by(district) %>% 
+  summarize(mean_dist = mean(total_el),
+            sd_dist = sd(total_el),
+            n = n())
+rownames(a) <- a$district
+cali_sys_lep <- a[c("Los Angeles Unified",
+                          "San Diego Unified"),]
+View(cali_sys_lep)
+cali_lep_members <- cali_lep[c(4138:4141,4348:4349,4806, 4838:4839,7651:7657,8567:8573)]
+View(cali_lep_members)
+names(cali_lep_members)
+names(california_members)
+cali_lep_members$perc_lep <- cali_lep_members[,3] / california_members[,11]
